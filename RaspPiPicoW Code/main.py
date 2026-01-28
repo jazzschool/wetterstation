@@ -170,7 +170,7 @@ def save_email_locally(subject, body, data):
     """Save unsent email as JSON file on the Pico."""
     try:
         # Make sure base folder exists
-        base_dir = "unsent"
+        base_dir = "unsent_readings"
         if base_dir not in os.listdir():
             os.mkdir(base_dir)
 
@@ -460,3 +460,4 @@ def main():
 # --- RUN ---
 if __name__ == "__main__":
     main()
+

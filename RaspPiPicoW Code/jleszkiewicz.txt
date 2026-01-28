@@ -1,0 +1,21 @@
+===================================================
+⚙️ Starte Einrichtung für Benutzer: jleszkiewicz
+===================================================
+▶️ 1. Erstelle Linux-Benutzer 'jleszkiewicz'...
+✅ Linux-Benutzer erstellt und Passwort gesetzt.
+▶️ 2. Richte public_html Verzeichnis ein...
+✅ public_html (/home/jleszkiewicz/public_html) erstellt und Berechtigungen gesetzt (711/755).
+▶️ 3. Erstelle Datenbank und DB-Benutzer in MariaDB...
+✅ Datenbank und Benutzer erfolgreich erstellt.
+
+===================================================
+🎉 Einrichtung abgeschlossen!
+===================================================
+Linux-Benutzer (Login): jleszkiewicz
+Web-Zugriff (URL): http://<Ihre_Server_IP>/~jleszkiewicz/
+---------------------------------------------------
+Datenbank-Informationen:
+Datenbank-Name: web_jleszkiewicz
+Datenbank-Benutzer: jleszkiewicz_db
+Datenbank-Passwort: O+ZzAGeIU0VFg6X6
+===================================================

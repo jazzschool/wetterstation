@@ -6,7 +6,7 @@ run
 then
 > cd "H:\YOUR\DIRECTORY" python email_to_db.py
 
-in your Powershell
+in your PC's Powershell (win)
 
 Configure the
 > config.py

@@ -421,7 +421,7 @@ def main():
             if EMAIL_ENABLE and readings_since_last_email >= EMAIL_INTERVAL:
                 if DEBUG:
                     print(f"📧 Email: Sending (every {EMAIL_INTERVAL} readings)...")
-                subject = f"Wetterstation Update {data['timestamp']}"
+                subject = f"wetterstation daten - {data['timestamp']}"
                 body = format_email_body(data)
                 email_sent = send_email(subject, body, data)
 
@@ -460,4 +460,5 @@ def main():
 # --- RUN ---
 if __name__ == "__main__":
     main()
+
 

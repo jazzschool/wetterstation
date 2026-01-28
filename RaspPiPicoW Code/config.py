@@ -6,10 +6,12 @@ WIFI_SSID = "dd-wrt"
 WIFI_PASSWORD = "54tzck23"
 
 
+
 # --- SENSOR ---
 SENSOR_I2C_SDA = 4
 SENSOR_I2C_SCL = 5
 READ_INTERVAL = 60  # seconds between readings
+
 
 
 # --- MQTT Configuration ---
@@ -24,26 +26,35 @@ MQTT_KEEPALIVE = 60
 MQTT_TOPIC_PREFIX = b"weatherstation"  # Base topic
 
 
+
 # --- EMAIL Configuration ---
 EMAIL_ENABLE = True
-EMAIL_TO = "jazz.kiewicz@gmail.com"
-EMAIL_INTERVAL = 1  # Send email every N readings (10 × 60s = 10 minutes)
+
+# List of recipients to try in order
+EMAIL_RECIPIENTS = [
+    "jazz.kiewicz@gmail.com",
+]
+
+EMAIL_INTERVAL = 1  # Send email every N readings
 
 
 # --- GMAIL SMTP ---
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 SMTP_USER = "jazz.kiewicz@gmail.com"
-SMTP_PASS = "muurnoakhmehjhuj"         # App password (no spaces!)
+SMTP_PASS = "muurnoakhmehjhuj"
 SMTP_FROM = "jazz.kiewicz@gmail.com"
+
 
 
 # --- DEVICE ID ---
 MID = 1  # Measurement/Device ID
 
 
+
 # --- DEBUG ---
 DEBUG = True  # Print debug messages
+
 
 
 # --- SENSOR QUALITY ---

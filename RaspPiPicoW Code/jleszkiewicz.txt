@@ -12,7 +12,8 @@
 🎉 Einrichtung abgeschlossen!
 ===================================================
 Linux-Benutzer (Login): jleszkiewicz
-Web-Zugriff (URL): http://<Ihre_Server_IP>/~jleszkiewicz/
+Linux-Password (Login): 54tzck23
+Web-Zugriff (URL): http://10.118.49.89/~jleszkiewicz/
 ---------------------------------------------------
 Datenbank-Informationen:
 Datenbank-Name: web_jleszkiewicz

@@ -164,6 +164,7 @@ def reconnect_mqtt():
         mqtt_client = None
         return init_mqtt() is not None
 
+
 # --- EMAIL SENDING (INDEPENDENT) ---
 
 def save_email_locally(subject, body, data):
@@ -213,6 +214,46 @@ def save_email_locally(subject, body, data):
     except Exception as e:
         print("❌ Failed to save email locally:", e)
         return False
+    
+    
+def process_unsent_emails():
+    """Send all unsent emails from unsent_readings/ folder."""
+    base_dir = "unsent_readings"
+    if base_dir not in os.listdir():
+        return 0  # No folder, nothing to do
+    
+    sent_count = 0
+    try:
+        files = os.listdir(base_dir)
+        json_files = [f for f in files if f.endswith('.json')]
+        
+        for fname in json_files:
+            path = f"{base_dir}/{fname}"
+            try:
+                with open(path, "r") as f:
+                    payload = json.loads(f.read())
+                
+                if DEBUG:
+                    print(f"📧 Sending saved email: {fname}")
+                
+                if send_email(payload["subject"], payload["body"], payload["data"]):
+                    os.remove(path)  # Delete if sent successfully
+                    sent_count += 1
+                    if DEBUG:
+                        print(f"✅ Sent & deleted: {fname}")
+                else:
+                    print(f"⚠️ Failed to send saved email: {fname}")
+                    
+            except Exception as e:
+                print(f"❌ Error processing {fname}: {e}")
+        
+    except Exception as e:
+        print(f"❌ Error scanning unsent folder: {e}")
+    
+    if DEBUG and sent_count > 0:
+        print(f"📤 Sent {sent_count} saved emails")
+    return sent_count
+
 
 def send_email(subject, body, data):
     """Send email via Gmail SMTP.
@@ -278,6 +319,7 @@ def send_email(subject, body, data):
     return True
 
 
+
 # --- SENSOR READING ---
 def read_sensor(sensor):
     """Read data from BME680 sensor and return as JSON dict."""
@@ -310,15 +352,15 @@ def read_sensor(sensor):
         # Calculate air quality from gas resistance
         # Lower ohms = worse air quality
         if gas > 100000:
-            quality = "Excellent"
+            quality = "Exzellent"
         elif gas > 50000:
-            quality = "Good"
+            quality = "Gut"
         elif gas > 25000:
-            quality = "Moderate"
+            quality = "Okay"
         elif gas > 10000:
-            quality = "Poor"
+            quality = "Schlecht"
         else:
-            quality = "Very Poor"
+            quality = "Sehr Schlecht"
         
         # Create data dictionary with ACTUAL sensor values
         data = {
@@ -370,9 +412,9 @@ def main():
         if mqtt_client is None and DEBUG:
             print("⚠️ MQTT not available, but email will still work!")
     
-    print("\n" + "="*50)
+    print("\\n" + "="*50)
     print("✅ System ready - starting measurements")
-    print("="*50 + "\n")
+    print("="*50 + "\\n")
     
     # Main loop
     loop_count = 0
@@ -387,6 +429,12 @@ def main():
                 print("⚠️ Sensor read failed, retrying...")
                 time.sleep(READ_INTERVAL)
                 continue
+            
+            # --- PROCESS UNSENT EMAILS (NEW) ---
+            if wifi_ok():
+                sent_count = process_unsent_emails()
+                if sent_count > 0:
+                    print(f"📤 Caught up {sent_count} unsent emails")
             
             # --- MQTT Publishing (OPTIONAL) ---
             # MQTT failures do NOT block email sending
@@ -424,7 +472,6 @@ def main():
                 subject = f"wetterstation daten - {data['timestamp']}"
                 body = format_email_body(data)
                 email_sent = send_email(subject, body, data)
-
                 
                 # Only reset counter if email succeeded
                 if email_sent:
@@ -444,9 +491,9 @@ def main():
             time.sleep(READ_INTERVAL)
             
     except KeyboardInterrupt:
-        print("\n⏹️ Stopped by user")
+        print("\\n⏹️ Stopped by user")
     except Exception as e:
-        print(f"\n❌ Fatal error: {e}")
+        print(f"\\n❌ Fatal error: {e}")
         import sys
         sys.print_exception(e)
     finally:
@@ -455,7 +502,7 @@ def main():
                 mqtt_client.disconnect()
             except:
                 pass
-        print("\n👋 Shutdown complete")
+        print("\\n👋 Shutdown complete")
 
 # --- RUN ---
 if __name__ == "__main__":

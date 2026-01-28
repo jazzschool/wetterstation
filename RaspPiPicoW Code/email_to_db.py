@@ -27,11 +27,12 @@ DB_PASS = "O+ZzAGeIU0VFg6X6"                          # ← XAMPP default (usual
 DB_NAME = "wetterstation"
 DB_TABLE = "messwert"
 
-# Check interval (seconds)
-CHECK_INTERVAL = 60                   # Check for new emails every 60 seconds
+# Check for email interval (seconds)
+CHECK_INTERVAL = 60
 
 # Email search criteria
-EMAIL_SEARCH = '(UNSEEN SUBJECT "wetterstation daten")'  # Only from Pico
+EMAIL_SEARCH = '(UNSEEN SUBJECT "wetterstation daten")'
+
 
 # ============================================================
 # FUNCTIONS

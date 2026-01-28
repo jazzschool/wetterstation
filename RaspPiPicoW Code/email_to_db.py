@@ -31,7 +31,7 @@ DB_TABLE = "messwert"
 CHECK_INTERVAL = 60                   # Check for new emails every 60 seconds
 
 # Email search criteria
-EMAIL_SEARCH = '(UNSEEN FROM "jazz.kiewicz@gmail.com")'  # Only from Pico
+EMAIL_SEARCH = '(UNSEEN SUBJECT "wetterstation daten")'  # Only from Pico
 
 # ============================================================
 # FUNCTIONS

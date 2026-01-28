@@ -7,6 +7,7 @@ import network
 import json
 import umail
 from bme680 import BME680_I2C
+import os
 
 from config import *
 
@@ -52,6 +53,9 @@ def init_sensor():
             return None
 
 # --- INITIALIZE WLAN ---
+def wifi_ok():
+    return wlan is not None and wlan.isconnected()
+
 def init_wlan():
     """Initialize WiFi connection."""
     global wlan
@@ -161,44 +165,118 @@ def reconnect_mqtt():
         return init_mqtt() is not None
 
 # --- EMAIL SENDING (INDEPENDENT) ---
-def send_email(subject, body):
+
+def save_email_locally(subject, body, data):
+    """Save unsent email as JSON file on the Pico."""
+    try:
+        # Make sure base folder exists
+        base_dir = "unsent"
+        if base_dir not in os.listdir():
+            os.mkdir(base_dir)
+
+        # Use timestamp from data if available, else current time
+        ts = data.get("timestamp", None)
+        if ts is None:
+            t = time.localtime()
+            ts = "{:04d}-{:02d}-{:02d}_{:02d}-{:02d}-{:02d}".format(
+                t[0], t[1], t[2], t[3], t[4], t[5]
+            )
+        else:
+            # convert "DD.MM.YYYY HH:MM:SS" -> "YYYY-MM-DD_HH-MM-SS"
+            # safe minimal conversion so filename has no spaces/colons
+            try:
+                day, month, year_time = ts.split(".")
+                year, time_part = year_time.split(" ", 1)
+                time_part = time_part.replace(":", "-")
+                ts = "{}-{}-{}_{}".format(year, month, day, time_part)
+            except:
+                ts = ts.replace(" ", "_").replace(":", "-")
+
+        # Unique filename: mid + timestamp
+        fname = "unsent_{}_{}.json".format(MID, ts)
+        path = "{}/{}".format(base_dir, fname)
+
+        payload = {
+            "subject": subject,
+            "body": body,
+            "data": data,
+        }
+
+        # Write JSON string to file
+        json_str = json.dumps(payload)
+        with open(path, "w") as f:
+            f.write(json_str)
+
+        if DEBUG:
+            print("💾 Saved unsent email to", path)
+        return True
+    except Exception as e:
+        print("❌ Failed to save email locally:", e)
+        return False
+
+def send_email(subject, body, data):
     """Send email via Gmail SMTP.
-    
-    This function is INDEPENDENT of MQTT - it doesn't require MQTT to be working.
+
+    Tries all EMAIL_RECIPIENTS in order until one works.
+    If WiFi/server not reachable, save to local file.
     """
     if not EMAIL_ENABLE:
         return False
-    
-    try:
+
+    # No WiFi? Save locally immediately.
+    if not wifi_ok():
         if DEBUG:
-            print("📧 Email: Attempting to send...")
-        
-        # Use TLS connection (port 587)
-        smtp = umail.SMTP(SMTP_SERVER, SMTP_PORT, ssl=False)
-        
-        # Upgrade to TLS
-        smtp.cmd("STARTTLS")
-        
-        # Login with app password
-        smtp.login(SMTP_USER, SMTP_PASS)
-        
-        # Compose email
-        smtp.to(EMAIL_TO)
-        smtp.write("From: " + SMTP_FROM + "\r\n")
-        smtp.write("To: " + EMAIL_TO + "\r\n")
-        smtp.write("Subject: " + subject + "\r\n")
-        smtp.write("Content-Type: text/plain; charset=utf-8\r\n\r\n")
-        smtp.write(body)
-        
-        # Send and close
-        smtp.send()
-        smtp.quit()
-        
-        print("✅ Email: Sent successfully!")
-        return True
-    except Exception as e:
-        print(f"❌ Email Error: {e}")
+            print("❌ No WiFi, saving email locally instead of sending")
+        save_email_locally(subject, body, data)
         return False
+
+    # Make sure we have a list of recipients
+    try:
+        recipients = EMAIL_RECIPIENTS
+    except NameError:
+        # Backwards compatibility: single EMAIL_TO
+        recipients = [EMAIL_TO]
+
+    last_error = None
+    sent_ok = False
+
+    for addr in recipients:
+        try:
+            if DEBUG:
+                print("📧 Email: Attempting to send to", addr, "...")
+
+            smtp = umail.SMTP(SMTP_SERVER, SMTP_PORT, ssl=False)
+            smtp.cmd("STARTTLS")
+            smtp.login(SMTP_USER, SMTP_PASS)
+
+            smtp.to(addr)
+            smtp.write("From: " + SMTP_FROM + "\r\n")
+            smtp.write("To: " + addr + "\r\n")
+            smtp.write("Subject: " + subject + "\r\n")
+            smtp.write("Content-Type: text/plain; charset=utf-8\r\n\r\n")
+            smtp.write(body)
+
+            smtp.send()
+            smtp.quit()
+
+            print("✅ Email: Sent successfully to", addr)
+            sent_ok = True
+            break  # stop after first success
+
+        except Exception as e:
+            last_error = e
+            print("❌ Email Error to", addr, ":", e)
+            # Try next address in the list
+
+    if not sent_ok:
+        # All recipients failed despite WiFi being up → save locally
+        if DEBUG:
+            print("⚠️ All email recipients failed, saving locally")
+        save_email_locally(subject, body, data)
+        return False
+
+    return True
+
 
 # --- SENSOR READING ---
 def read_sensor(sensor):
@@ -345,7 +423,8 @@ def main():
                     print(f"📧 Email: Sending (every {EMAIL_INTERVAL} readings)...")
                 subject = f"Wetterstation Update {data['timestamp']}"
                 body = format_email_body(data)
-                email_sent = send_email(subject, body)
+                email_sent = send_email(subject, body, data)
+
                 
                 # Only reset counter if email succeeded
                 if email_sent:

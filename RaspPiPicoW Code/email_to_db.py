@@ -21,10 +21,10 @@ GMAIL_IMAP = "imap.gmail.com"
 GMAIL_IMAP_PORT = 993
 
 # XAMPP MySQL Settings
-DB_HOST = "web_jleszkiewicz"
+DB_HOST = "10.118.49.89"
 DB_USER = "jleszkiewicz_db"                      # ← XAMPP default user
 DB_PASS = "O+ZzAGeIU0VFg6X6"                          # ← XAMPP default (usually empty)
-DB_NAME = "wetterstation"
+DB_NAME = "web_jleszkiewicz"
 DB_TABLE = "messwert"
 
 # Check for email interval (seconds)

@@ -178,11 +178,12 @@ def check_and_sync():
                 continue
             
             try:
-                # Select inbox
-                imap.select("INBOX")
-                
-                # Search for unseen emails
-                status, email_ids = imap.search(None, EMAIL_SEARCH)
+                # Select Gmail label as mailbox instead of INBOX
+                status, _ = imap.select("wetterstation")
+
+                # Search for unseen emails in that label
+                status, email_ids = imap.search(None, "UNSEEN")
+
                 
                 # Initialize email_list to avoid undefined variable error
                 email_list = []

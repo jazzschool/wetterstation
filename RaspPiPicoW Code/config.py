@@ -32,18 +32,18 @@ EMAIL_ENABLE = True
 
 # List of recipients to try in order
 EMAIL_RECIPIENTS = [
-    "jazz.kiewicz@gmail.com",
+    "[INSERT EMAIL RECIPIENTS]",
 ]
 
-EMAIL_INTERVAL = 1  # Send email every N readings
+EMAIL_INTERVAL = 5  # Send email every N readings
 
 
 # --- GMAIL SMTP ---
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
-SMTP_USER = "jazz.kiewicz@gmail.com"
-SMTP_PASS = "muurnoakhmehjhuj"
-SMTP_FROM = "jazz.kiewicz@gmail.com"
+SMTP_USER = "[INSERT GMAIL ADDRESS]"
+SMTP_PASS = "[INSERT GMAIL APP PASSWORD]"
+SMTP_FROM = "[INSERT GMAIL READING ADDRESS"
 
 
 

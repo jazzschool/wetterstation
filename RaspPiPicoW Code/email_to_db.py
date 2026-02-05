@@ -15,17 +15,17 @@ from datetime import datetime
 # ============================================================
 
 # Gmail IMAP Settings
-GMAIL_USER = "jazz.kiewicz@gmail.com"
-GMAIL_PASS = "muurnoakhmehjhuj"      # ← Use Gmail App Password, NOT your regular password
+GMAIL_USER = "[INSERT GMAIL ADDRESS]"
+GMAIL_PASS = "[INSERT GMAIL APP PASSWORD]"      # ← Use Gmail App Password, NOT your regular password
 GMAIL_IMAP = "imap.gmail.com"
 GMAIL_IMAP_PORT = 993
 
 # XAMPP MySQL Settings
-DB_HOST = "10.118.49.89"
-DB_USER = "jleszkiewicz_db"                      # ← XAMPP default user
-DB_PASS = "O+ZzAGeIU0VFg6X6"                          # ← XAMPP default (usually empty)
-DB_NAME = "web_jleszkiewicz"
-DB_TABLE = "messwert"
+DB_HOST = "[INSERT DB IP ADDRESS]"
+DB_USER = "[ISERT DB USER]"
+DB_PASS = "[ISERT DB PASSWORD]"
+DB_NAME = "[ISERT DB NAME]"
+DB_TABLE = "[ISERT DB TABLE NAME]"
 
 # Check for email interval (seconds)
 CHECK_INTERVAL = 60

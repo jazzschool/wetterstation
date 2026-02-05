@@ -2,8 +2,8 @@
 # ============================================
 
 # --- WLAN ---
-WIFI_SSID = "dd-wrt"
-WIFI_PASSWORD = "54tzck23"
+WIFI_SSID = "[INSERT WIFI SSID]"
+WIFI_PASSWORD = "[INSERT WIFI PASSWORD]"
 
 
 
@@ -63,3 +63,4 @@ DEBUG = True  # Print debug messages
 SENSOR_QUALITY_GOOD = 0
 SENSOR_QUALITY_MODERATE = 50
 SENSOR_QUALITY_UNHEALTHY = 200
+

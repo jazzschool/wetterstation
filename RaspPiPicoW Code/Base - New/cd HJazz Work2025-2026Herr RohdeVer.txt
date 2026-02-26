@@ -1,0 +1,1 @@
+cd "H:\Jazz Work\2025-2026\Herr Rohde\Verteilte Wetterstation\RaspPiPicoW Code\Base - New" python mail_to_db.py
